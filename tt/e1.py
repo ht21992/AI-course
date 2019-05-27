@@ -1,18 +1,26 @@
+"""  1)load data"""
+
 import pandas as pd
-import numpy as np
 data=pd.read_csv("master.csv",skiprows=0)
 """
------>>>>> if i write code like below data type of year  will become object???
+----->>>>> if i write code like below data type of year  will become object???!!!!
 cols=["country","age","year","sex"]
 data=pd.read_csv("master.csv",names=cols,sep=",")
 
 """
 
+"""   2)data exploratory """
+
 list_to_drop=["suicides_no","population","suicides/100k pop","country-year","HDI for year"," gdp_for_year ($) ","generation"]
 data=data.drop(list_to_drop,axis=1)
 #print(data.isna().sum())
 #print(data.info())
-#print(data.sample(5)(
+#print(data.sample(5)
+
+""" 3) data preprocessing   """
+
+
+
 from sklearn.preprocessing import LabelEncoder
 le=LabelEncoder()
 le.fit(data["country"])
@@ -41,19 +49,42 @@ ax[1,1].scatter(data.country,data["gdp_per_capita ($)"])
 ax[1,1].set_xlabel("country")
 ax[1,1].set_ylabel("gdp per capita")
 #plt.show()
+
+"""  4)features and labels """
+
 featuers=data.drop("country",axis=1)
 label=data["country"]
 
+"""  5)data spliting  """
 
 from sklearn.model_selection import train_test_split
 x_train,x_test,y_train,y_test=train_test_split(featuers,label,test_size=0.3,random_state=5)
+
+"""    6)model selection  """
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 DTC=DecisionTreeClassifier(criterion="entropy",max_depth=18)
 #svclassifier=SVC(kernel="rbf",gamma="auto")
+
+
+"""   7) model training  """
+
 DTC.fit(x_train,y_train)
 predict=DTC.predict(x_test)
+
+"""   8) model evaluation  """
 from sklearn.metrics import accuracy_score
-"""DTC with max depth=18 and SVC with rbf kernel both have 0.999 accuracy"""
+
+
 print(round(accuracy_score(y_test,predict),3))
+
+
+"""9) model adjustment """
+
+
+"""DTC with max depth=18 and SVC with rbf kernel both have 0.999 accuracy"""
+
+
+"""  10) model usage """
+
 print(predict)
